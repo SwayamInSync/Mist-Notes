@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mist Notes - Dark Mode & Fades</title>
+    <title>Mist Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -81,6 +81,10 @@
         --button-active-bg: #4299e1; /* blue-500 */
         --button-active-text: white;
         --button-active-border: #2b6cb0; /* blue-700 */
+        --icon-button-bg: transparent;
+        --icon-button-text: var(--text-secondary);
+        --icon-button-hover-bg: var(--button-bg);
+        --icon-button-hover-text: var(--text-primary);
         --error-bg: #fef2f2;
         --error-border: #fecaca;
         --error-text: #b91c1c;
@@ -126,6 +130,10 @@
         --button-active-bg: #63b3ed; /* Light blue */
         --button-active-text: #1a202c; /* Dark text on light blue */
         --button-active-border: #90cdf4; /* Lighter blue */
+        --icon-button-bg: transparent;
+        --icon-button-text: var(--text-secondary);
+        --icon-button-hover-bg: var(--button-bg);
+        --icon-button-hover-text: var(--text-primary);
         --error-bg: #450a0a; /* Dark red */
         --error-border: #7f1d1d;
         --error-text: #fecaca;
@@ -238,7 +246,6 @@
       .preview-prose h4 {
         font-size: 1.2em;
       }
-
       .preview-prose p {
         margin-bottom: 1.2em;
       }
@@ -303,7 +310,6 @@
       }
       .preview-prose pre code {
         background-color: transparent !important;
-        /* color: inherit !important; */ /* Let hljs handle text color */
         padding: 0 !important;
         border-radius: 0 !important;
         font-size: 0.9em !important;
@@ -317,7 +323,6 @@
         display: block;
         overflow-x: auto;
         background: inherit;
-        /* color: inherit; */ /* Let hljs handle text color */
         transition: background-color 0.3s ease;
       }
 
@@ -389,7 +394,6 @@
         transition: color 0.3s ease;
       }
       .katex-error {
-        /* Keep error colors distinct */
         color: #cc0000;
         background-color: #fdd;
         padding: 0.2em 0.4em;
@@ -416,7 +420,7 @@
       ::-webkit-scrollbar-thumb {
         background: var(--scrollbar-thumb);
         border-radius: 10px;
-        border: 1px solid var(--scrollbar-track); /* Blend edge */
+        border: 1px solid var(--scrollbar-track);
       }
       ::-webkit-scrollbar-thumb:hover {
         background: var(--scrollbar-thumb-hover);
@@ -477,7 +481,7 @@
         background: linear-gradient(
           to bottom,
           var(--fade-gradient-color) 0%,
-          /* Match container background */ transparent 100%
+          transparent 100%
         );
       }
       .scroll-fade::after {
@@ -485,13 +489,12 @@
         background: linear-gradient(
           to top,
           var(--fade-gradient-color) 0%,
-          /* Match container background */ transparent 100%
+          transparent 100%
         );
       }
-      /* Apply fade to both containers */
       .editor-scroll-container,
       .preview-scroll-container {
-        position: relative; /* Needed for absolute positioning of pseudo-elements */
+        position: relative;
       }
       .editor-scroll-container::before,
       .editor-scroll-container::after,
@@ -501,10 +504,10 @@
         position: absolute;
         left: 0;
         right: 0;
-        height: 1.5rem; /* Adjust fade height */
+        height: 1.5rem;
         z-index: 1;
-        pointer-events: none; /* Allow clicks/scrolls through */
-        transition: background-image 0.3s ease; /* Smooth theme change */
+        pointer-events: none;
+        transition: background-image 0.3s ease;
       }
       .editor-scroll-container::before,
       .preview-scroll-container::before {
@@ -512,7 +515,7 @@
         background: linear-gradient(
           to bottom,
           var(--fade-gradient-color) 20%,
-          /* Start fade later */ transparent 100%
+          transparent 100%
         );
       }
       .editor-scroll-container::after,
@@ -521,18 +524,15 @@
         background: linear-gradient(
           to top,
           var(--fade-gradient-color) 20%,
-          /* Start fade later */ transparent 100%
+          transparent 100%
         );
       }
-      /* Hide scrollbar underneath the fade */
       #editor::-webkit-scrollbar,
       #preview-container::-webkit-scrollbar {
-        width: 10px; /* Make slightly wider to ensure thumb is visible */
+        width: 10px;
       }
       #editor,
       #preview-container {
-        /* Add padding to compensate for scrollbar width if needed,
-              or ensure content doesn't go under the fade */
         padding-right: calc(
           1.25rem + 10px
         ); /* Adjust base padding + scrollbar */
@@ -599,29 +599,29 @@
         box-shadow: 0 0 0 2px var(--button-active-bg); /* Focus ring */
       }
 
-      /* --- Theme Toggle Button --- */
-      #theme-toggle {
-        background: none;
+      /* --- Icon Buttons (Theme, Download, Upload) --- */
+      .icon-button {
+        background: var(--icon-button-bg);
         border: none;
         padding: 0.3rem; /* Make clickable area larger */
-        margin-left: 0.75rem; /* Space from view buttons */
+        margin-left: 0.5rem; /* Space between icon buttons */
         cursor: pointer;
-        color: var(--text-secondary);
+        color: var(--icon-button-text);
         border-radius: 50%;
         display: flex; /* Center icon */
         align-items: center;
         justify-content: center;
         transition: color 0.2s ease, background-color 0.2s ease;
       }
-      #theme-toggle:hover {
-        color: var(--text-primary);
-        background-color: var(--button-bg); /* Subtle hover */
+      .icon-button:hover {
+        color: var(--icon-button-hover-text);
+        background-color: var(--icon-button-hover-bg); /* Subtle hover */
       }
-      #theme-toggle:focus {
+      .icon-button:focus {
         outline: none;
         box-shadow: 0 0 0 2px var(--button-active-bg); /* Focus ring */
       }
-      #theme-toggle .feather {
+      .icon-button .feather {
         width: 18px; /* Icon size */
         height: 18px;
         stroke-width: 2;
@@ -650,7 +650,34 @@
           </button>
           <button id="btn-preview" class="view-mode-button">Preview</button>
         </div>
-        <button id="theme-toggle" title="Toggle theme"></button>
+
+        <div class="flex items-center">
+          <input
+            type="file"
+            id="file-upload-input"
+            accept=".md,text/markdown"
+            style="display: none"
+          />
+          <button
+            id="upload-button"
+            class="icon-button"
+            title="Upload Markdown File"
+          >
+            <i data-feather="upload"></i>
+          </button>
+          <button
+            id="download-button"
+            class="icon-button"
+            title="Download as Markdown"
+          >
+            <i data-feather="download"></i>
+          </button>
+          <button
+            id="theme-toggle"
+            class="icon-button"
+            title="Toggle theme"
+          ></button>
+        </div>
       </div>
 
       <div id="panes-container">
@@ -665,7 +692,7 @@
           <div class="pane-header">
             <h2>Editor</h2>
           </div>
-          <div class="editor-scroll-container">
+          <div class="editor-scroll-container scroll-fade">
             <textarea
               id="editor"
               placeholder="Type Markdown, LaTeX ($...$ or $$...$$) & Code here..."
@@ -677,13 +704,17 @@
           <div class="pane-header">
             <h2>Preview</h2>
           </div>
-          <div id="preview-container" class="preview-scroll-container">
+          <div
+            id="preview-container"
+            class="preview-scroll-container scroll-fade"
+          >
             <div id="render-error-message" class="hidden"></div>
             <div id="preview" class="preview-prose"></div>
           </div>
         </div>
       </div>
     </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", (event) => {
         // --- DOM Element References ---
@@ -697,23 +728,25 @@
         const btnSplit = document.getElementById("btn-split");
         const btnPreview = document.getElementById("btn-preview");
         const themeToggleButton = document.getElementById("theme-toggle");
-        const htmlElement = document.documentElement; // Target <html> for dark class
+        const downloadButton = document.getElementById("download-button"); // New
+        const uploadButton = document.getElementById("upload-button"); // New
+        const fileUploadInput = document.getElementById("file-upload-input"); // New
+        const htmlElement = document.documentElement;
         const hljsLightTheme = document.getElementById("hljs-light-theme");
         const hljsDarkTheme = document.getElementById("hljs-dark-theme");
 
         // --- State Variables ---
-        const localStorageKeyContent = "MistNotesContent_v7"; // Incremented version
-        const localStorageKeyViewMode = "MistNotesViewMode_v7";
-        const localStorageKeyTheme = "MistNotesTheme_v7";
+        const localStorageKeyContent = "MistNotesContent_v8"; // Incremented version
+        const localStorageKeyViewMode = "MistNotesViewMode_v8";
+        const localStorageKeyTheme = "MistNotesTheme_v8";
         let currentViewMode = "split";
-        let currentTheme = "light"; // Default theme
+        let currentTheme = "light";
         let librariesLoaded = true;
         let debounceTimer;
         let isSyncingEditor = false;
         let isSyncingPreview = false;
 
         // --- Library Availability Check ---
-        // (Same as before)
         if (typeof marked === "undefined") {
           console.error("Marked.js failed to load.");
           preview.innerHTML =
@@ -726,6 +759,7 @@
         if (typeof feather === "undefined") {
           console.error("Feather Icons failed to load.");
         }
+        // Check KaTeX after a short delay as it might load deferred
         setTimeout(() => {
           if (
             typeof katex === "undefined" ||
@@ -745,21 +779,37 @@
             renderer: new marked.Renderer(),
             pedantic: false,
             gfm: true,
-            breaks: false,
+            breaks: false, // Consider setting to true if you want single newlines to be <br>
             smartLists: true,
             smartypants: false,
             xhtml: false,
+            // Highlight.js integration within Marked
+            highlight: function (code, lang) {
+              if (typeof hljs !== "undefined") {
+                const language = hljs.getLanguage(lang) ? lang : "plaintext";
+                try {
+                  return hljs.highlight(code, {
+                    language: language,
+                    ignoreIllegals: true,
+                  }).value;
+                } catch (error) {
+                  console.error("Highlight.js error:", error);
+                  return code; // return original code on error
+                }
+              }
+              return code; // return original code if hljs not loaded
+            },
           });
         }
 
         // --- Theme Management ---
         function applyTheme(theme) {
           console.log("Applying theme:", theme);
-          currentTheme = theme; // Update global state
-          htmlElement.classList.remove("light", "dark"); // Remove previous theme class
-          htmlElement.classList.add(theme); // Add current theme class
+          currentTheme = theme;
+          htmlElement.classList.remove("light", "dark");
+          htmlElement.classList.add(theme);
 
-          // Update toggle button icon
+          // Update toggle button icon using Feather Icons
           if (typeof feather !== "undefined") {
             themeToggleButton.innerHTML =
               feather.icons[theme === "dark" ? "sun" : "moon"].toSvg();
@@ -769,33 +819,9 @@
           hljsLightTheme.disabled = theme === "dark";
           hljsDarkTheme.disabled = theme === "light";
 
-          // Re-highlight code blocks if preview is already rendered
-          if (preview.innerHTML.length > 0 && typeof hljs !== "undefined") {
-            console.log("Re-applying syntax highlighting for theme change.");
-            try {
-              const codeBlocks = preview.querySelectorAll("pre code");
-              codeBlocks.forEach((block) => {
-                // Remove existing hljs classes to force re-highlighting with new theme
-                block.className.split(" ").forEach((cls) => {
-                  if (cls.startsWith("hljs")) {
-                    block.classList.remove(cls);
-                  }
-                });
-                // Ensure the language class (e.g., 'language-javascript') is preserved if present
-                let langClass = "";
-                block.classList.forEach((cls) => {
-                  if (cls.startsWith("language-")) {
-                    langClass = cls;
-                  }
-                });
-                block.className = `hljs ${langClass}`; // Reset with base class + language
-                hljs.highlightElement(block);
-              });
-            } catch (hljsError) {
-              console.error("Error re-applying highlight.js theme:", hljsError);
-              // Optionally show error message
-            }
-          }
+          // Re-render content to apply new theme to code blocks immediately
+          // This is simpler than trying to manually swap hljs classes
+          renderContent(false); // Pass false to avoid saving during theme change
 
           localStorage.setItem(localStorageKeyTheme, theme);
           console.log("Theme saved:", theme);
@@ -807,8 +833,9 @@
         }
 
         // --- Content Rendering Function ---
-        function renderContent() {
-          console.log("renderContent called");
+        // Added 'saveContent' flag to prevent saving during theme changes etc.
+        function renderContent(saveContent = true) {
+          console.log(`renderContent called (saveContent: ${saveContent})`);
           errorMessageDiv.classList.add("hidden");
           errorMessageDiv.innerHTML = "";
 
@@ -819,8 +846,10 @@
             rawText = editor.value;
             console.log("Step 1: Got editor value.");
 
-            // 1. Render Markdown
-            console.log("Step 2: Starting Marked parsing...");
+            // 1. Render Markdown (includes highlight.js via marked options)
+            console.log(
+              "Step 2: Starting Marked parsing (includes highlighting)..."
+            );
             const html = marked.parse(rawText);
             preview.innerHTML = html;
             console.log("Step 2: Marked parsing finished and HTML set.");
@@ -841,17 +870,20 @@
                     { left: "\\[", right: "\\]", display: true },
                   ],
                   strict: (errorCode, errorMsg, token) => {
+                    // Ignore specific harmless errors if needed
                     if (errorCode === "htmlExtension") return "ignore";
                     console.warn(
                       `KaTeX parse warning: ${errorMsg} (Code: ${errorCode})`,
                       token
                     );
+                    // Display a user-friendly error inline
                     const errorSpan = document.createElement("span");
                     errorSpan.className = "katex-error";
-                    errorSpan.textContent = `KaTeX Error: ${errorMsg}`;
+                    errorSpan.title = `KaTeX Error: ${errorMsg}`;
+                    errorSpan.textContent = `[KaTeX Error]`;
                     return errorSpan;
                   },
-                  throwOnError: false,
+                  throwOnError: false, // Don't stop rendering for one error
                 });
                 console.log("Step 3: KaTeX rendering finished.");
               } catch (katexError) {
@@ -867,43 +899,16 @@
               console.log("Step 3: KaTeX not found or not needed.");
             }
 
-            // 3. Apply Syntax Highlighting (Highlight.js)
-            console.log("Step 4: Checking for Highlight.js...");
-            if (typeof hljs !== "undefined") {
-              console.log(
-                "Step 4: Highlight.js found. Starting highlighting..."
-              );
-              try {
-                const codeBlocks = preview.querySelectorAll("pre code");
-                console.log(`Step 4: Found ${codeBlocks.length} code blocks.`);
-                codeBlocks.forEach((block) => {
-                  // Check if already highlighted (basic check)
-                  if (!block.classList.contains("hljs")) {
-                    hljs.highlightElement(block);
-                  } else {
-                    // If theme changed, might need re-highlighting (handled in applyTheme)
-                    // For initial render, this is fine.
-                  }
-                });
-                console.log("Step 4: Highlight.js processing finished.");
-              } catch (hljsError) {
-                console.error(
-                  "Error during Highlight.js processing:",
-                  hljsError
-                );
-                errorMessageDiv.innerHTML = `<div class='render-error-box'><strong>Syntax Highlighting Error:</strong><pre>${
-                  hljsError.message || hljsError
-                }</pre></div>`;
-                errorMessageDiv.classList.remove("hidden");
-              }
-            } else {
-              console.log("Step 4: Highlight.js not found.");
-            }
+            // Step 4 (Highlighting) is now handled by Marked's highlight option
 
-            // 4. Save content to local storage
-            console.log("Step 5: Saving content to localStorage...");
-            localStorage.setItem(localStorageKeyContent, rawText);
-            console.log("Step 5: Saved content to localStorage.");
+            // 5. Save content to local storage (if requested)
+            if (saveContent) {
+              console.log("Step 5: Saving content to localStorage...");
+              localStorage.setItem(localStorageKeyContent, rawText);
+              console.log("Step 5: Saved content to localStorage.");
+            } else {
+              console.log("Step 5: Skipping save to localStorage.");
+            }
 
             console.log("renderContent finished successfully.");
           } catch (error) {
@@ -914,7 +919,7 @@
                                             <pre>${error.message}\n${
               error.stack ? error.stack.substring(0, 300) + "..." : ""
             }</pre>
-                                        </div>`;
+                                          </div>`;
             errorMessageDiv.classList.remove("hidden");
           }
         } // --- End renderContent ---
@@ -928,45 +933,102 @@
             btn.classList.remove("active")
           );
 
-          // Reset pane classes and border
-          editorPane.classList.remove(
-            "hidden",
-            "w-full",
-            "md:w-1/2",
-            "border-r-0"
-          );
+          // Reset pane classes and border visibility
+          editorPane.classList.remove("hidden", "w-full", "md:w-1/2");
           previewPane.classList.remove("hidden", "w-full", "md:w-1/2");
-          editorPane.style.borderRightColor = "var(--border-light)"; // Ensure border color resets
+          editorPane.classList.add("flex"); // Ensure it's flex for layout
+          previewPane.classList.add("flex"); // Ensure it's flex for layout
+          editorPane.style.borderRightStyle = "solid"; // Default border style
 
           switch (mode) {
             case "edit":
-              editorPane.classList.remove("hidden");
               editorPane.classList.add("w-full");
-              editorPane.style.borderRightColor = "transparent"; // No border when full width
+              editorPane.style.borderRightStyle = "none"; // No border when full width
               previewPane.classList.add("hidden");
+              previewPane.classList.remove("flex");
               btnEdit.classList.add("active");
               break;
             case "preview":
               editorPane.classList.add("hidden");
-              previewPane.classList.remove("hidden");
+              editorPane.classList.remove("flex");
               previewPane.classList.add("w-full");
               btnPreview.classList.add("active");
               break;
             case "split":
-            default:
-              editorPane.classList.remove("hidden");
-              previewPane.classList.remove("hidden");
-              editorPane.classList.add("md:w-1/2", "w-full"); // Keep w-full for small screens
-              previewPane.classList.add("md:w-1/2", "w-full"); // Keep w-full for small screens
-              // Add border back for split view
-              editorPane.style.borderRightColor = "var(--border-light)";
+            default: // Fallback to split
+              editorPane.classList.add("md:w-1/2", "w-full"); // w-full for small screens
+              previewPane.classList.add("md:w-1/2", "w-full"); // w-full for small screens
+              editorPane.style.borderRightStyle = "solid"; // Add border back for split view
               btnSplit.classList.add("active");
-              currentViewMode = "split";
+              currentViewMode = "split"; // Ensure state is correct
               break;
           }
 
           localStorage.setItem(localStorageKeyViewMode, currentViewMode);
           console.log("View mode saved:", currentViewMode);
+        }
+
+        // --- Download Functionality ---
+        function downloadMarkdown() {
+          const content = editor.value;
+          const filename = "mist-note.md"; // Default filename
+          const blob = new Blob([content], {
+            type: "text/markdown;charset=utf-8",
+          });
+          const url = URL.createObjectURL(blob);
+
+          const link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute("download", filename);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          URL.revokeObjectURL(url); // Clean up
+          console.log("Markdown file download initiated.");
+        }
+
+        // --- Upload Functionality ---
+        function triggerFileUpload() {
+          fileUploadInput.click(); // Open the file selection dialog
+        }
+
+        function handleFileUpload(event) {
+          const file = event.target.files[0];
+          if (!file) {
+            console.log("No file selected.");
+            return;
+          }
+
+          // Basic check for Markdown extension
+          if (!file.name.toLowerCase().endsWith(".md")) {
+            alert("Please select a Markdown file (.md)");
+            console.warn("Invalid file type selected:", file.name);
+            // Reset input value to allow selecting the same file again if needed
+            event.target.value = null;
+            return;
+          }
+
+          const reader = new FileReader();
+
+          reader.onload = (e) => {
+            const content = e.target.result;
+            editor.value = content; // Load content into editor
+            renderContent(); // Render the new content
+            console.log("Markdown file uploaded and rendered:", file.name);
+            // Reset input value to allow selecting the same file again if needed
+            event.target.value = null;
+          };
+
+          reader.onerror = (e) => {
+            console.error("Error reading file:", file.name, e);
+            alert("Error reading the selected file.");
+            // Reset input value
+            event.target.value = null;
+          };
+
+          reader.readAsText(file); // Read the file as text
         }
 
         // --- Load Content, View Mode, and Theme from Local Storage ---
@@ -1010,12 +1072,12 @@ fibonacci(10)
 
 ## Try it out!
 
-Modify this text or add your own notes. The content and settings are saved locally.`;
+Modify this text or add your own notes. Click the 💾 icon to download or the 📤 icon to upload a .md file. The content and settings are saved locally.`;
           editor.value = savedContent !== null ? savedContent : defaultContent;
 
           // Load Theme (before view mode to apply styles correctly)
           const savedTheme = localStorage.getItem(localStorageKeyTheme);
-          const initialTheme = savedTheme === "dark" ? "dark" : "light"; // Default to light
+          const initialTheme = savedTheme === "dark" ? "dark" : "light";
           applyTheme(initialTheme); // Apply theme first
 
           // Load View Mode
@@ -1027,12 +1089,11 @@ Modify this text or add your own notes. The content and settings are saved local
           setViewMode(initialMode);
 
           // Initial render after loading everything
-          renderContent();
+          renderContent(false); // Don't save on initial load
           console.log("Initial state loaded and rendered.");
         }
 
         // --- Scroll Synchronization Logic (Throttled) ---
-        // (Same as before)
         function throttle(func, limit) {
           let inThrottle;
           return function () {
@@ -1055,22 +1116,26 @@ Modify this text or add your own notes. The content and settings are saved local
             editorScrollHeight - editorClientHeight
           );
           const editorScrollPercent = editor.scrollTop / editorScrollableDist;
+
           const previewScrollHeight = previewContainer.scrollHeight;
           const previewClientHeight = previewContainer.clientHeight;
           const previewScrollableDist = Math.max(
             1,
             previewScrollHeight - previewClientHeight
           );
+
           const previewTargetScrollTop =
             editorScrollPercent * previewScrollableDist;
+
           isSyncingPreview = true;
           previewContainer.scrollTop = previewTargetScrollTop;
+          // Use requestAnimationFrame and setTimeout to release the lock after the scroll likely happened
           requestAnimationFrame(() => {
             setTimeout(() => {
               isSyncingPreview = false;
-            }, 50);
+            }, 50); // Small delay
           });
-        }, 50);
+        }, 50); // Throttle interval
 
         const syncEditorScroll = throttle(() => {
           if (currentViewMode !== "split" || isSyncingPreview) return;
@@ -1082,14 +1147,17 @@ Modify this text or add your own notes. The content and settings are saved local
           );
           const previewScrollPercent =
             previewContainer.scrollTop / previewScrollableDist;
+
           const editorScrollHeight = editor.scrollHeight;
           const editorClientHeight = editor.clientHeight;
           const editorScrollableDist = Math.max(
             1,
             editorScrollHeight - editorClientHeight
           );
+
           const editorTargetScrollTop =
             previewScrollPercent * editorScrollableDist;
+
           isSyncingEditor = true;
           editor.scrollTop = editorTargetScrollTop;
           requestAnimationFrame(() => {
@@ -1101,13 +1169,13 @@ Modify this text or add your own notes. The content and settings are saved local
 
         // --- Event Listeners ---
 
-        // Editor Input Listener (Debounced Rendering)
+        // Editor Input Listener (Debounced Rendering & Saving)
         editor.addEventListener("input", () => {
           clearTimeout(debounceTimer);
           debounceTimer = setTimeout(() => {
-            console.log("Debounce timeout -> renderContent");
-            renderContent();
-          }, 250);
+            console.log("Debounce timeout -> renderContent (with save)");
+            renderContent(true); // Render and save
+          }, 250); // Debounce interval
         });
 
         // Scroll Sync Listeners
@@ -1122,8 +1190,21 @@ Modify this text or add your own notes. The content and settings are saved local
         // Theme Toggle Listener
         themeToggleButton.addEventListener("click", toggleTheme);
 
-        // --- Initial Load ---
+        // Download/Upload Button Listeners
+        downloadButton.addEventListener("click", downloadMarkdown);
+        uploadButton.addEventListener("click", triggerFileUpload);
+        fileUploadInput.addEventListener("change", handleFileUpload);
+
+        // --- Initial Load & Icon Rendering ---
         loadState(); // Load content, theme, view mode, then render
+
+        // Render Feather Icons after initial setup
+        if (typeof feather !== "undefined") {
+          feather.replace();
+          console.log("Feather icons rendered.");
+        } else {
+          console.error("Feather icons could not be rendered initially.");
+        }
       }); // End DOMContentLoaded
     </script>
   </body>
