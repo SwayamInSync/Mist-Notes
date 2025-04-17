@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Notes - Dark Mode & Fades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+      integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+      integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+      crossorigin="anonymous"
+      onload="console.log('KaTeX auto-render loaded.')"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+      id="hljs-light-theme"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css"
+    />
+    <link
+      id="hljs-dark-theme"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+      disabled
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400..800;1,400..800&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+      /* --- CSS Variables for Theming --- */
+      :root {
+        --page-bg: #fdfbf6; /* Page background */
+        --app-bg: #ffffff; /* Paper background */
+        --app-border: #eee;
+        --app-shadow: rgba(0, 0, 0, 0.08);
+        --text-primary: #2d3748; /* Editor text */
+        --text-secondary: #4a5568; /* Preview blockquote text, KaTeX */
+        --text-muted: #a0aec0; /* Editor placeholder */
+        --text-prose: #333; /* Preview main text */
+        --text-heading: #1a202c; /* Preview headings */
+        --border-light: #e2e8f0; /* Borders inside app */
+        --border-medium: #cbd5e0; /* HR, Table borders */
+        --border-blockquote: #a0aec0;
+        --link-color: #2b6cb0;
+        --link-hover-color: #1a365d;
+        --link-hover-bg: #ebf8ff;
+        --link-border: #63b3ed;
+        --code-inline-bg: #edf2f7;
+        --code-inline-text: #c53030;
+        --code-block-bg: #fafafa; /* Fallback/wrapper bg */
+        --blockquote-bg: #f7fafc;
+        --table-header-bg: #f7fafc;
+        --table-row-even-bg: #fdfdfd;
+        --katex-bg: #f7fafc;
+        --katex-border: #edf2f7;
+        --scrollbar-track: #f1f1f1;
+        --scrollbar-thumb: #cbd5e0; /* gray-400 */
+        --scrollbar-thumb-hover: #a0aec0; /* gray-500 */
+        --pane-header-bg: #f7fafc; /* gray-100 */
+        --pane-header-text: #718096; /* gray-600 */
+        --button-bg: #e2e8f0; /* gray-300 */
+        --button-text: #4a5568; /* gray-700 */
+        --button-hover-bg: #cbd5e0; /* gray-400 */
+        --button-active-bg: #4299e1; /* blue-500 */
+        --button-active-text: white;
+        --button-active-border: #2b6cb0; /* blue-700 */
+        --error-bg: #fef2f2;
+        --error-border: #fecaca;
+        --error-text: #b91c1c;
+        --error-strong-text: #991b1b;
+        --error-pre-bg: #fee2e2;
+        --error-pre-text: #7f1d1d;
+        --fade-gradient-color: var(--app-bg); /* Use app background for fade */
+      }
+
+      .dark {
+        --page-bg: #1a202c; /* Dark blue-gray */
+        --app-bg: #2d3748; /* Slightly lighter dark blue-gray */
+        --app-border: #4a5568; /* Gray */
+        --app-shadow: rgba(0, 0, 0, 0.4);
+        --text-primary: #e2e8f0; /* Light gray */
+        --text-secondary: #a0aec0; /* Medium gray */
+        --text-muted: #718096; /* Darker gray */
+        --text-prose: #cbd5e0; /* Light gray for prose */
+        --text-heading: #edf2f7; /* Very light gray for headings */
+        --border-light: #4a5568; /* Gray */
+        --border-medium: #718096; /* Darker gray */
+        --border-blockquote: #a0aec0;
+        --link-color: #63b3ed; /* Light blue */
+        --link-hover-color: #90cdf4; /* Lighter blue */
+        --link-hover-bg: #2c5282; /* Dark blue */
+        --link-border: #4299e1; /* Medium blue */
+        --code-inline-bg: #4a5568; /* Gray */
+        --code-inline-text: #feb2b2; /* Light red */
+        --code-block-bg: #1a202c; /* Match page bg */
+        --blockquote-bg: #1f2937; /* Darker than app bg */
+        --table-header-bg: #1f2937;
+        --table-row-even-bg: #222c3a; /* Slightly different dark */
+        --katex-bg: #1f2937;
+        --katex-border: #4a5568;
+        --scrollbar-track: #2d3748; /* Match app bg */
+        --scrollbar-thumb: #4a5568; /* Gray */
+        --scrollbar-thumb-hover: #718096; /* Darker gray */
+        --pane-header-bg: #1f2937; /* Darker than app bg */
+        --pane-header-text: #a0aec0; /* Medium gray */
+        --button-bg: #4a5568; /* Gray */
+        --button-text: #e2e8f0; /* Light gray */
+        --button-hover-bg: #718096; /* Darker gray */
+        --button-active-bg: #63b3ed; /* Light blue */
+        --button-active-text: #1a202c; /* Dark text on light blue */
+        --button-active-border: #90cdf4; /* Lighter blue */
+        --error-bg: #450a0a; /* Dark red */
+        --error-border: #7f1d1d;
+        --error-text: #fecaca;
+        --error-strong-text: #fee2e2;
+        --error-pre-bg: #5f1717;
+        --error-pre-text: #fcdada;
+        --fade-gradient-color: var(--app-bg);
+      }
+
+      /* --- Base & Body Styling --- */
+      body {
+        font-family: "Inter", sans-serif;
+        overscroll-behavior: none;
+        background-color: var(--page-bg);
+        padding: 1.5rem;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+      }
+
+      /* --- Main Content Container (The 'Paper') --- */
+      #app-container {
+        background-color: var(--app-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px var(--app-shadow);
+        overflow: hidden;
+        border: 1px solid var(--app-border);
+        width: 100%;
+        max-width: 1600px; /* Max width */
+        height: calc(100vh - 3rem); /* Adjust height based on body padding */
+        display: flex;
+        flex-direction: column; /* Stack controls and panes vertically */
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      /* Container for Editor and Preview Panes */
+      #panes-container {
+        flex-grow: 1; /* Take remaining vertical space */
+        display: flex;
+        flex-direction: row; /* Panes side-by-side */
+        overflow: hidden; /* Prevent content spill */
+      }
+
+      /* --- Editor Styling --- */
+      #editor {
+        font-family: "JetBrains Mono", monospace;
+        background-color: var(--app-bg);
+        color: var(--text-primary);
+        caret-color: var(--text-secondary);
+        line-height: 1.6;
+        padding: 1.25rem;
+        border: none;
+        outline: none;
+        overflow-y: auto; /* Editor itself is scrollable */
+        height: 100%; /* Fill the parent flex item */
+        width: 100%; /* Take full width of its container */
+        resize: none; /* Disable textarea resize handle */
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      #editor::placeholder {
+        color: var(--text-muted);
+      }
+
+      /* --- Preview Container --- */
+      #preview-container {
+        background-color: var(--app-bg);
+        padding: 1.5rem;
+        overflow-y: auto; /* Preview container is scrollable */
+        height: 100%; /* Fill the parent flex item */
+        transition: background-color 0.3s ease;
+      }
+
+      /* --- Preview Prose Styling (Lora font, etc.) --- */
+      .preview-prose {
+        font-family: "Lora", serif;
+        color: var(--text-prose);
+        max-width: none; /* Allow content to fill container */
+        line-height: 1.75;
+        transition: color 0.3s ease;
+      }
+
+      /* Headings */
+      .preview-prose h1,
+      .preview-prose h2,
+      .preview-prose h3,
+      .preview-prose h4,
+      .preview-prose h5,
+      .preview-prose h6 {
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        margin-top: 1.6em;
+        margin-bottom: 0.7em;
+        line-height: 1.3;
+        border-bottom: 1px solid var(--border-light);
+        padding-bottom: 0.4em;
+        color: var(--text-heading);
+        transition: color 0.3s ease, border-color 0.3s ease;
+      }
+      .preview-prose h1 {
+        font-size: 2.1em;
+      }
+      .preview-prose h2 {
+        font-size: 1.7em;
+      }
+      .preview-prose h3 {
+        font-size: 1.4em;
+      }
+      .preview-prose h4 {
+        font-size: 1.2em;
+      }
+
+      .preview-prose p {
+        margin-bottom: 1.2em;
+      }
+
+      /* Lists */
+      .preview-prose ul,
+      .preview-prose ol {
+        margin-left: 1.75em;
+        margin-bottom: 1.2em;
+        padding-left: 0;
+      }
+      .preview-prose ul {
+        list-style-type: square;
+      }
+      .preview-prose ol {
+        list-style-type: decimal;
+      }
+      .preview-prose li {
+        margin-bottom: 0.5em;
+      }
+      .preview-prose li > p {
+        margin-bottom: 0.3em;
+      }
+
+      /* Blockquotes */
+      .preview-prose blockquote {
+        border-left: 4px solid var(--border-blockquote);
+        padding: 0.8em 1.2em;
+        margin-left: 0;
+        margin-right: 0;
+        font-style: italic;
+        color: var(--text-secondary);
+        background-color: var(--blockquote-bg);
+        border-radius: 4px;
+        transition: color 0.3s ease, background-color 0.3s ease,
+          border-color 0.3s ease;
+      }
+      .preview-prose blockquote p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Inline Code */
+      .preview-prose code {
+        background-color: var(--code-inline-bg);
+        color: var(--code-inline-text);
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        font-size: 0.875em;
+        font-family: "JetBrains Mono", monospace;
+        vertical-align: middle;
+        transition: color 0.3s ease, background-color 0.3s ease;
+      }
+
+      /* Code Blocks (pre > code) */
+      .preview-prose pre {
+        border: 1px solid var(--border-light);
+        border-radius: 6px;
+        overflow-x: auto;
+        margin-bottom: 1.5em;
+        background: var(--code-block-bg); /* Use variable */
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .preview-prose pre code {
+        background-color: transparent !important;
+        /* color: inherit !important; */ /* Let hljs handle text color */
+        padding: 0 !important;
+        border-radius: 0 !important;
+        font-size: 0.9em !important;
+        border: none !important;
+        vertical-align: baseline !important;
+        font-family: "JetBrains Mono", monospace !important;
+      }
+      .hljs {
+        padding: 1em;
+        border-radius: inherit;
+        display: block;
+        overflow-x: auto;
+        background: inherit;
+        /* color: inherit; */ /* Let hljs handle text color */
+        transition: background-color 0.3s ease;
+      }
+
+      /* Links */
+      .preview-prose a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--link-border);
+        transition: all 0.2s ease-in-out;
+      }
+      .preview-prose a:hover {
+        color: var(--link-hover-color);
+        border-bottom-style: solid;
+        background-color: var(--link-hover-bg);
+      }
+
+      /* Tables */
+      .preview-prose table {
+        width: auto;
+        border-collapse: collapse;
+        margin-bottom: 1.5em;
+        border: 1px solid var(--border-medium);
+        box-shadow: 0 1px 2px var(--app-shadow);
+        transition: border-color 0.3s ease;
+      }
+      .preview-prose th,
+      .preview-prose td {
+        border: 1px solid var(--border-light);
+        padding: 0.7em 1em;
+        text-align: left;
+        transition: border-color 0.3s ease;
+      }
+      .preview-prose th {
+        background-color: var(--table-header-bg);
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        transition: background-color 0.3s ease;
+      }
+      .preview-prose tr:nth-child(even) {
+        background-color: var(--table-row-even-bg);
+        transition: background-color 0.3s ease;
+      }
+
+      /* Horizontal Rule */
+      .preview-prose hr {
+        border-top: 2px dashed var(--border-medium);
+        margin: 2.5em 0;
+        background: none;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+        transition: border-color 0.3s ease;
+      }
+
+      /* KaTeX Styling */
+      .katex-display {
+        margin: 1em 0;
+        padding: 0.5em;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background-color: var(--katex-bg);
+        border-radius: 4px;
+        border: 1px solid var(--katex-border);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .katex {
+        font-size: 1.05em;
+        color: var(--text-secondary);
+        transition: color 0.3s ease;
+      }
+      .katex-error {
+        /* Keep error colors distinct */
+        color: #cc0000;
+        background-color: #fdd;
+        padding: 0.2em 0.4em;
+        border: 1px solid #cc0000;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-family: monospace;
+      }
+      .dark .katex-error {
+        color: #fecaca; /* Light red */
+        background-color: #7f1d1d; /* Dark red */
+        border-color: #b91c1c;
+      }
+
+      /* --- Custom Scrollbars --- */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 10px;
+        border: 1px solid var(--scrollbar-track); /* Blend edge */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
+      }
+      ::-webkit-scrollbar-corner {
+        background: var(--scrollbar-track);
+      }
+
+      /* --- Pane Headers --- */
+      .pane-header {
+        padding: 0.6rem 1.25rem;
+        border-bottom: 1px solid var(--border-light);
+        background-color: var(--pane-header-bg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0; /* Prevent header shrinking */
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .pane-header h2 {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--pane-header-text);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin: 0;
+        transition: color 0.3s ease;
+      }
+
+      /* Container for the editor textarea to manage layout */
+      .editor-scroll-container {
+        flex-grow: 1; /* Allow container to grow */
+        overflow: hidden; /* Hide potential overflow from textarea border/padding */
+        position: relative; /* Context for fade effect */
+      }
+
+      /* Container for the preview content */
+      .preview-scroll-container {
+        flex-grow: 1; /* Allow container to grow */
+        overflow: hidden; /* Hide potential overflow */
+        position: relative; /* Context for fade effect */
+      }
+
+      /* --- Fading Scroll Effect --- */
+      .scroll-fade::before,
+      .scroll-fade::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1.5rem; /* Adjust fade height */
+        z-index: 1;
+        pointer-events: none; /* Allow clicks/scrolls through */
+        transition: background-image 0.3s ease; /* Smooth theme change */
+      }
+      .scroll-fade::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          var(--fade-gradient-color) 0%,
+          /* Match container background */ transparent 100%
+        );
+      }
+      .scroll-fade::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          var(--fade-gradient-color) 0%,
+          /* Match container background */ transparent 100%
+        );
+      }
+      /* Apply fade to both containers */
+      .editor-scroll-container,
+      .preview-scroll-container {
+        position: relative; /* Needed for absolute positioning of pseudo-elements */
+      }
+      .editor-scroll-container::before,
+      .editor-scroll-container::after,
+      .preview-scroll-container::before,
+      .preview-scroll-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1.5rem; /* Adjust fade height */
+        z-index: 1;
+        pointer-events: none; /* Allow clicks/scrolls through */
+        transition: background-image 0.3s ease; /* Smooth theme change */
+      }
+      .editor-scroll-container::before,
+      .preview-scroll-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          var(--fade-gradient-color) 20%,
+          /* Start fade later */ transparent 100%
+        );
+      }
+      .editor-scroll-container::after,
+      .preview-scroll-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          var(--fade-gradient-color) 20%,
+          /* Start fade later */ transparent 100%
+        );
+      }
+      /* Hide scrollbar underneath the fade */
+      #editor::-webkit-scrollbar,
+      #preview-container::-webkit-scrollbar {
+        width: 10px; /* Make slightly wider to ensure thumb is visible */
+      }
+      #editor,
+      #preview-container {
+        /* Add padding to compensate for scrollbar width if needed,
+              or ensure content doesn't go under the fade */
+        padding-right: calc(
+          1.25rem + 10px
+        ); /* Adjust base padding + scrollbar */
+      }
+
+      /* Error message styling */
+      .render-error-box {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: var(--error-bg);
+        border: 1px solid var(--error-border);
+        color: var(--error-text);
+        border-radius: 6px;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          color 0.3s ease;
+      }
+      .render-error-box strong {
+        font-weight: 600;
+        color: var(--error-strong-text);
+        transition: color 0.3s ease;
+      }
+      .render-error-box pre {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background-color: var(--error-pre-bg);
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.85em;
+        white-space: pre-wrap;
+        word-break: break-all;
+        color: var(--error-pre-text);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* --- View Mode Toggle Buttons --- */
+      .view-mode-button {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease,
+          box-shadow 0.2s ease, border-color 0.2s ease;
+        border: 1px solid transparent;
+        background-color: var(--button-bg);
+        color: var(--button-text);
+        margin: 0 0.25rem; /* Spacing between buttons */
+      }
+      .view-mode-button:hover {
+        background-color: var(--button-hover-bg);
+      }
+      .view-mode-button.active {
+        background-color: var(--button-active-bg);
+        color: var(--button-active-text);
+        border-color: var(--button-active-border);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .dark .view-mode-button.active {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      .view-mode-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--button-active-bg); /* Focus ring */
+      }
+
+      /* --- Theme Toggle Button --- */
+      #theme-toggle {
+        background: none;
+        border: none;
+        padding: 0.3rem; /* Make clickable area larger */
+        margin-left: 0.75rem; /* Space from view buttons */
+        cursor: pointer;
+        color: var(--text-secondary);
+        border-radius: 50%;
+        display: flex; /* Center icon */
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease, background-color 0.2s ease;
+      }
+      #theme-toggle:hover {
+        color: var(--text-primary);
+        background-color: var(--button-bg); /* Subtle hover */
+      }
+      #theme-toggle:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--button-active-bg); /* Focus ring */
+      }
+      #theme-toggle .feather {
+        width: 18px; /* Icon size */
+        height: 18px;
+        stroke-width: 2;
+      }
+    </style>
+  </head>
+  <body class="h-screen overflow-hidden">
+    <div id="app-container">
+      <div
+        class="p-2 border-b border-gray-200 bg-gray-50 flex justify-between items-center flex-shrink-0"
+        style="
+          border-bottom-color: var(--border-light);
+          background-color: var(--pane-header-bg);
+          transition: background-color 0.3s ease, border-color 0.3s ease;
+        "
+      >
+        <div class="flex-grow flex justify-center items-center">
+          <span
+            class="text-xs font-semibold uppercase text-gray-500 mr-3"
+            style="color: var(--pane-header-text); transition: color 0.3s ease"
+            >View:</span
+          >
+          <button id="btn-edit" class="view-mode-button">Editing</button>
+          <button id="btn-split" class="view-mode-button active">
+            Editing + Preview
+          </button>
+          <button id="btn-preview" class="view-mode-button">Preview</button>
+        </div>
+        <button id="theme-toggle" title="Toggle theme"></button>
+      </div>
+
+      <div id="panes-container">
+        <div
+          id="editor-pane"
+          class="w-full md:w-1/2 h-full flex flex-col border-r border-gray-200"
+          style="
+            border-right-color: var(--border-light);
+            transition: border-color 0.3s ease;
+          "
+        >
+          <div class="pane-header">
+            <h2>Editor</h2>
+          </div>
+          <div class="editor-scroll-container">
+            <textarea
+              id="editor"
+              placeholder="Type Markdown, LaTeX ($...$ or $$...$$) & Code here..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div id="preview-pane" class="w-full md:w-1/2 h-full flex flex-col">
+          <div class="pane-header">
+            <h2>Preview</h2>
+          </div>
+          <div id="preview-container" class="preview-scroll-container">
+            <div id="render-error-message" class="hidden"></div>
+            <div id="preview" class="preview-prose"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        // --- DOM Element References ---
+        const editor = document.getElementById("editor");
+        const previewContainer = document.getElementById("preview-container");
+        const preview = document.getElementById("preview");
+        const errorMessageDiv = document.getElementById("render-error-message");
+        const editorPane = document.getElementById("editor-pane");
+        const previewPane = document.getElementById("preview-pane");
+        const btnEdit = document.getElementById("btn-edit");
+        const btnSplit = document.getElementById("btn-split");
+        const btnPreview = document.getElementById("btn-preview");
+        const themeToggleButton = document.getElementById("theme-toggle");
+        const htmlElement = document.documentElement; // Target <html> for dark class
+        const hljsLightTheme = document.getElementById("hljs-light-theme");
+        const hljsDarkTheme = document.getElementById("hljs-dark-theme");
+
+        // --- State Variables ---
+        const localStorageKeyContent = "enhancedNotesContent_v7"; // Incremented version
+        const localStorageKeyViewMode = "enhancedNotesViewMode_v7";
+        const localStorageKeyTheme = "enhancedNotesTheme_v7";
+        let currentViewMode = "split";
+        let currentTheme = "light"; // Default theme
+        let librariesLoaded = true;
+        let debounceTimer;
+        let isSyncingEditor = false;
+        let isSyncingPreview = false;
+
+        // --- Library Availability Check ---
+        // (Same as before)
+        if (typeof marked === "undefined") {
+          console.error("Marked.js failed to load.");
+          preview.innerHTML =
+            "<p class='render-error-box'>Error: Markdown library (Marked.js) failed to load.</p>";
+          librariesLoaded = false;
+        }
+        if (typeof hljs === "undefined") {
+          console.error("Highlight.js failed to load.");
+        }
+        if (typeof feather === "undefined") {
+          console.error("Feather Icons failed to load.");
+        }
+        setTimeout(() => {
+          if (
+            typeof katex === "undefined" ||
+            typeof renderMathInElement === "undefined"
+          ) {
+            console.warn(
+              "KaTeX or its auto-render extension might not have loaded correctly."
+            );
+          } else {
+            console.log("KaTeX and auto-render seem available.");
+          }
+        }, 500);
+
+        // --- Marked.js Configuration ---
+        if (librariesLoaded) {
+          marked.setOptions({
+            renderer: new marked.Renderer(),
+            pedantic: false,
+            gfm: true,
+            breaks: false,
+            smartLists: true,
+            smartypants: false,
+            xhtml: false,
+          });
+        }
+
+        // --- Theme Management ---
+        function applyTheme(theme) {
+          console.log("Applying theme:", theme);
+          currentTheme = theme; // Update global state
+          htmlElement.classList.remove("light", "dark"); // Remove previous theme class
+          htmlElement.classList.add(theme); // Add current theme class
+
+          // Update toggle button icon
+          if (typeof feather !== "undefined") {
+            themeToggleButton.innerHTML =
+              feather.icons[theme === "dark" ? "sun" : "moon"].toSvg();
+          }
+
+          // Enable/disable highlight.js themes
+          hljsLightTheme.disabled = theme === "dark";
+          hljsDarkTheme.disabled = theme === "light";
+
+          // Re-highlight code blocks if preview is already rendered
+          if (preview.innerHTML.length > 0 && typeof hljs !== "undefined") {
+            console.log("Re-applying syntax highlighting for theme change.");
+            try {
+              const codeBlocks = preview.querySelectorAll("pre code");
+              codeBlocks.forEach((block) => {
+                // Remove existing hljs classes to force re-highlighting with new theme
+                block.className.split(" ").forEach((cls) => {
+                  if (cls.startsWith("hljs")) {
+                    block.classList.remove(cls);
+                  }
+                });
+                // Ensure the language class (e.g., 'language-javascript') is preserved if present
+                let langClass = "";
+                block.classList.forEach((cls) => {
+                  if (cls.startsWith("language-")) {
+                    langClass = cls;
+                  }
+                });
+                block.className = `hljs ${langClass}`; // Reset with base class + language
+                hljs.highlightElement(block);
+              });
+            } catch (hljsError) {
+              console.error("Error re-applying highlight.js theme:", hljsError);
+              // Optionally show error message
+            }
+          }
+
+          localStorage.setItem(localStorageKeyTheme, theme);
+          console.log("Theme saved:", theme);
+        }
+
+        function toggleTheme() {
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+          applyTheme(newTheme);
+        }
+
+        // --- Content Rendering Function ---
+        function renderContent() {
+          console.log("renderContent called");
+          errorMessageDiv.classList.add("hidden");
+          errorMessageDiv.innerHTML = "";
+
+          if (!librariesLoaded || typeof marked === "undefined") return;
+
+          let rawText = "";
+          try {
+            rawText = editor.value;
+            console.log("Step 1: Got editor value.");
+
+            // 1. Render Markdown
+            console.log("Step 2: Starting Marked parsing...");
+            const html = marked.parse(rawText);
+            preview.innerHTML = html;
+            console.log("Step 2: Marked parsing finished and HTML set.");
+
+            // 2. Render LaTeX (KaTeX)
+            console.log("Step 3: Checking for KaTeX...");
+            if (
+              typeof katex !== "undefined" &&
+              typeof renderMathInElement === "function"
+            ) {
+              console.log("Step 3: KaTeX found. Starting KaTeX rendering...");
+              try {
+                renderMathInElement(preview, {
+                  delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                    { left: "\\(", right: "\\)", display: false },
+                    { left: "\\[", right: "\\]", display: true },
+                  ],
+                  strict: (errorCode, errorMsg, token) => {
+                    if (errorCode === "htmlExtension") return "ignore";
+                    console.warn(
+                      `KaTeX parse warning: ${errorMsg} (Code: ${errorCode})`,
+                      token
+                    );
+                    const errorSpan = document.createElement("span");
+                    errorSpan.className = "katex-error";
+                    errorSpan.textContent = `KaTeX Error: ${errorMsg}`;
+                    return errorSpan;
+                  },
+                  throwOnError: false,
+                });
+                console.log("Step 3: KaTeX rendering finished.");
+              } catch (katexError) {
+                console.error("Error during KaTeX rendering step:", katexError);
+                errorMessageDiv.innerHTML = `<div class='render-error-box'><strong>KaTeX Rendering Error:</strong><pre>${
+                  katexError.message || katexError
+                }</pre></div>`;
+                errorMessageDiv.classList.remove("hidden");
+              }
+            } else if (rawText.match(/(\$|\\\(|\\\[)/)) {
+              console.warn("KaTeX not loaded, but math delimiters detected.");
+            } else {
+              console.log("Step 3: KaTeX not found or not needed.");
+            }
+
+            // 3. Apply Syntax Highlighting (Highlight.js)
+            console.log("Step 4: Checking for Highlight.js...");
+            if (typeof hljs !== "undefined") {
+              console.log(
+                "Step 4: Highlight.js found. Starting highlighting..."
+              );
+              try {
+                const codeBlocks = preview.querySelectorAll("pre code");
+                console.log(`Step 4: Found ${codeBlocks.length} code blocks.`);
+                codeBlocks.forEach((block) => {
+                  // Check if already highlighted (basic check)
+                  if (!block.classList.contains("hljs")) {
+                    hljs.highlightElement(block);
+                  } else {
+                    // If theme changed, might need re-highlighting (handled in applyTheme)
+                    // For initial render, this is fine.
+                  }
+                });
+                console.log("Step 4: Highlight.js processing finished.");
+              } catch (hljsError) {
+                console.error(
+                  "Error during Highlight.js processing:",
+                  hljsError
+                );
+                errorMessageDiv.innerHTML = `<div class='render-error-box'><strong>Syntax Highlighting Error:</strong><pre>${
+                  hljsError.message || hljsError
+                }</pre></div>`;
+                errorMessageDiv.classList.remove("hidden");
+              }
+            } else {
+              console.log("Step 4: Highlight.js not found.");
+            }
+
+            // 4. Save content to local storage
+            console.log("Step 5: Saving content to localStorage...");
+            localStorage.setItem(localStorageKeyContent, rawText);
+            console.log("Step 5: Saved content to localStorage.");
+
+            console.log("renderContent finished successfully.");
+          } catch (error) {
+            console.error("Unhandled error during rendering process:", error);
+            errorMessageDiv.innerHTML = `<div class='render-error-box'>
+                                            <strong>An unexpected error occurred during rendering:</strong>
+                                            <p class='text-sm my-1'>Check the developer console (F12) for more technical details.</p>
+                                            <pre>${error.message}\n${
+              error.stack ? error.stack.substring(0, 300) + "..." : ""
+            }</pre>
+                                        </div>`;
+            errorMessageDiv.classList.remove("hidden");
+          }
+        } // --- End renderContent ---
+
+        // --- View Mode Management ---
+        function setViewMode(mode) {
+          console.log("Setting view mode to:", mode);
+          currentViewMode = mode;
+
+          [btnEdit, btnSplit, btnPreview].forEach((btn) =>
+            btn.classList.remove("active")
+          );
+
+          // Reset pane classes and border
+          editorPane.classList.remove(
+            "hidden",
+            "w-full",
+            "md:w-1/2",
+            "border-r-0"
+          );
+          previewPane.classList.remove("hidden", "w-full", "md:w-1/2");
+          editorPane.style.borderRightColor = "var(--border-light)"; // Ensure border color resets
+
+          switch (mode) {
+            case "edit":
+              editorPane.classList.remove("hidden");
+              editorPane.classList.add("w-full");
+              editorPane.style.borderRightColor = "transparent"; // No border when full width
+              previewPane.classList.add("hidden");
+              btnEdit.classList.add("active");
+              break;
+            case "preview":
+              editorPane.classList.add("hidden");
+              previewPane.classList.remove("hidden");
+              previewPane.classList.add("w-full");
+              btnPreview.classList.add("active");
+              break;
+            case "split":
+            default:
+              editorPane.classList.remove("hidden");
+              previewPane.classList.remove("hidden");
+              editorPane.classList.add("md:w-1/2", "w-full"); // Keep w-full for small screens
+              previewPane.classList.add("md:w-1/2", "w-full"); // Keep w-full for small screens
+              // Add border back for split view
+              editorPane.style.borderRightColor = "var(--border-light)";
+              btnSplit.classList.add("active");
+              currentViewMode = "split";
+              break;
+          }
+
+          localStorage.setItem(localStorageKeyViewMode, currentViewMode);
+          console.log("View mode saved:", currentViewMode);
+        }
+
+        // --- Load Content, View Mode, and Theme from Local Storage ---
+        function loadState() {
+          // Load Content
+          const savedContent = localStorage.getItem(localStorageKeyContent);
+          const defaultContent = `# Welcome to Enhanced Notes! ✨
+
+This editor supports **Markdown**, LaTeX, and code syntax highlighting.
+
+## Features
+
+* Real-time preview
+* **Dark Mode** (use the toggle button 🌓)
+* Scroll fade effect
+* Markdown formatting (like lists, *emphasis*, \`code\`)
+* LaTeX for math equations:
+    * Inline: $ E = mc^2 $
+    * Display style: $$ \\sum_{i=1}^n i = \\frac{n(n+1)}{2} $$
+* Code blocks with syntax highlighting:
+
+\`\`\`javascript
+function greet(name) {
+  // This comment will adapt to the theme
+  console.log(\`Hello, \${name}!\`);
+}
+greet('World');
+\`\`\`
+
+\`\`\`python
+def fibonacci(n):
+    # This one too!
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()
+
+fibonacci(10)
+\`\`\`
+
+## Try it out!
+
+Modify this text or add your own notes. The content and settings are saved locally.`;
+          editor.value = savedContent !== null ? savedContent : defaultContent;
+
+          // Load Theme (before view mode to apply styles correctly)
+          const savedTheme = localStorage.getItem(localStorageKeyTheme);
+          const initialTheme = savedTheme === "dark" ? "dark" : "light"; // Default to light
+          applyTheme(initialTheme); // Apply theme first
+
+          // Load View Mode
+          const savedViewMode = localStorage.getItem(localStorageKeyViewMode);
+          const validModes = ["edit", "split", "preview"];
+          const initialMode = validModes.includes(savedViewMode)
+            ? savedViewMode
+            : "split";
+          setViewMode(initialMode);
+
+          // Initial render after loading everything
+          renderContent();
+          console.log("Initial state loaded and rendered.");
+        }
+
+        // --- Scroll Synchronization Logic (Throttled) ---
+        // (Same as before)
+        function throttle(func, limit) {
+          let inThrottle;
+          return function () {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+              func.apply(context, args);
+              inThrottle = true;
+              setTimeout(() => (inThrottle = false), limit);
+            }
+          };
+        }
+
+        const syncPreviewScroll = throttle(() => {
+          if (currentViewMode !== "split" || isSyncingEditor) return;
+          const editorScrollHeight = editor.scrollHeight;
+          const editorClientHeight = editor.clientHeight;
+          const editorScrollableDist = Math.max(
+            1,
+            editorScrollHeight - editorClientHeight
+          );
+          const editorScrollPercent = editor.scrollTop / editorScrollableDist;
+          const previewScrollHeight = previewContainer.scrollHeight;
+          const previewClientHeight = previewContainer.clientHeight;
+          const previewScrollableDist = Math.max(
+            1,
+            previewScrollHeight - previewClientHeight
+          );
+          const previewTargetScrollTop =
+            editorScrollPercent * previewScrollableDist;
+          isSyncingPreview = true;
+          previewContainer.scrollTop = previewTargetScrollTop;
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              isSyncingPreview = false;
+            }, 50);
+          });
+        }, 50);
+
+        const syncEditorScroll = throttle(() => {
+          if (currentViewMode !== "split" || isSyncingPreview) return;
+          const previewScrollHeight = previewContainer.scrollHeight;
+          const previewClientHeight = previewContainer.clientHeight;
+          const previewScrollableDist = Math.max(
+            1,
+            previewScrollHeight - previewClientHeight
+          );
+          const previewScrollPercent =
+            previewContainer.scrollTop / previewScrollableDist;
+          const editorScrollHeight = editor.scrollHeight;
+          const editorClientHeight = editor.clientHeight;
+          const editorScrollableDist = Math.max(
+            1,
+            editorScrollHeight - editorClientHeight
+          );
+          const editorTargetScrollTop =
+            previewScrollPercent * editorScrollableDist;
+          isSyncingEditor = true;
+          editor.scrollTop = editorTargetScrollTop;
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              isSyncingEditor = false;
+            }, 50);
+          });
+        }, 50);
+
+        // --- Event Listeners ---
+
+        // Editor Input Listener (Debounced Rendering)
+        editor.addEventListener("input", () => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            console.log("Debounce timeout -> renderContent");
+            renderContent();
+          }, 250);
+        });
+
+        // Scroll Sync Listeners
+        editor.addEventListener("scroll", syncPreviewScroll);
+        previewContainer.addEventListener("scroll", syncEditorScroll);
+
+        // View Mode Button Listeners
+        btnEdit.addEventListener("click", () => setViewMode("edit"));
+        btnSplit.addEventListener("click", () => setViewMode("split"));
+        btnPreview.addEventListener("click", () => setViewMode("preview"));
+
+        // Theme Toggle Listener
+        themeToggleButton.addEventListener("click", toggleTheme);
+
+        // --- Initial Load ---
+        loadState(); // Load content, theme, view mode, then render
+      }); // End DOMContentLoaded
+    </script>
+  </body>
+</html>
